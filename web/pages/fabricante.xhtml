@@ -17,12 +17,16 @@ and open the template in the editor.
     </ui:define>
 
     <ui:define name="conteudo">
-        <h:form>
-            <p:dataTable emptyMessage="Nenhum registro encontrado." 
+        <h:form id="frmFabListagem">
+            <p:dataTable id="tblFabricantes" emptyMessage="Nenhum registro encontrado." 
                          value="#{MBFabricante.itens}"
                          var="item"
                          paginator="true"
                          rows="10">
+                
+                <f:facet name="header">
+                    Fabricante - Listagem
+                </f:facet>
                 <p:column headerText="Código" sortBy="#{item.codigo}" filterBy="#{item.codigo}">
                     <h:outputText value="#{item.codigo}" />
                 </p:column>
@@ -30,8 +34,29 @@ and open the template in the editor.
                 <p:column headerText="Descrição" sortBy="#{item.descricao}" filterBy="#{item.descricao}">
                     <h:outputText value="#{item.descricao}" />
                 </p:column>
+                
+                <f:facet name="footer">
+                    <p:commandButton value="Novo" actionListener="#{MBFabricante.prepararNovo}" oncomplete="PF('dlgFabNovo').show();"
+                                     update=":frmFabNovo:pnlFabNovo"/>
+                </f:facet>
             </p:dataTable>
         </h:form>
+        
+        <p:dialog widgetVar="dlgFabNovo" closable="false" draggable="false" resizable="false"
+                  modal="true" appendTo="@(body)" header="Fabricante - Novo">
+            <h:form id="frmFabNovo">
+                <h:panelGrid id="pnlFabNovo" columns="2">
+                    <p:outputLabel value="Descrição"/>
+                    <p:inputText size="30" maxlength="50" value="#{MBFabricante.fabricante.descricao}"/>
+                </h:panelGrid>
+                
+                <h:panelGrid columns="2">
+                    <p:commandButton value="Gravar" actionListener="#{MBFabricante.novo}" oncomplete="PF('dlgFabNovo').hide();"
+                                     update=":frmFabListagem:tblFabricantes"/>
+                    <p:commandButton value="Cancelar" onclick="PF('dlgFabNovo').hide();"/>
+                </h:panelGrid>
+            </h:form>
+        </p:dialog>
     </ui:define>
 
 </ui:composition>
